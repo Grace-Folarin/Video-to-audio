@@ -4,19 +4,16 @@ import os
 import subprocess
 import moviepy.editor as mp
 
-def sendmessage(message):
-    	subprocess.Popen(['notify-send', message])
-    	return
+from moviepy.editor import VideoFileClip
 
-paths = os.environ['NAUTILUS_SCRIPT_SELECTED_FILE_PATHS'].splitlines()
-for p in paths:
-    	sendmessage(p)
+def extract_audio(video_path, output_audio_path):
+    video_clip = VideoFileClip(video_path)
+    audio_clip = video_clip.audio
+    audio_clip.write_audiofile(output_audio_path)
+    audio_clip.close()
+    video_clip.close()
 
-try:
-	name = str(p.split('/')[-1]).split('.')[0]
-	video = mp.VideoFileClip(p)
-	video.audio.write_audiofile(name + ".mp3")
-	sendmessage("Done")
-except Exception as e:
-        sendmessage("An Error Occured")
+video_path = "input_video.mp4"
+output_audio_path = "output_audio.wav"
 
+extract_audio(video_path, output_audio_path)
